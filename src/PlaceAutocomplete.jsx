@@ -1,22 +1,17 @@
-<!DOCTYPE html>
-<!--
- @license
- Copyright 2019 Google LLC. All Rights Reserved.
- SPDX-License-Identifier: Apache-2.0
--->
-<html>
-<head>
-    <title>Place Autocomplete</title>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-    <script>
-        /**
-         * @license
-         * Copyright 2019 Google LLC. All Rights Reserved.
-         * SPDX-License-Identifier: Apache-2.0
-         */
-        // This example requires the Places library. Include the libraries=places
-        // parameter when you first load the API. For example:
-        // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+/* global google */
+
+import React, {useEffect, useRef, useState} from 'react';
+import "./style.css";
+
+function PlaceAutocomplete() {
+    const [map, setMap] = useState(null);
+    const [autocomplete, setAutocomplete] = useState(null);
+    const [marker, setMarker] = useState(null);
+    const [infowindow, setInfowindow] = useState(null);
+    const [input, setInput] = useState(null);
+    const mapRef = useRef(null);
+
+    useEffect(() => {
         function initMap() {
             let mapCenter = { lat: 40.749933, lng: -73.98633 }; // Default location
 
@@ -42,7 +37,7 @@
         }
 
         function initializeMap(center) {
-            const map = new google.maps.Map(document.getElementById("map"), {
+            const map = new google.maps.Map(mapRef.current, {
                 center: center,
                 zoom: 13,
                 mapTypeControl: false,
@@ -162,152 +157,62 @@
         }
 
         window.initMap = initMap;
-    </script>
-    <style>
-        /**
-         * @license
-         * Copyright 2019 Google LLC. All Rights Reserved.
-         * SPDX-License-Identifier: Apache-2.0
-         */
-        /*
-         * Always set the map height explicitly to define the size of the div element
-         * that contains the map.
-         */
-        #map {
-            height: 100%;
-        }
+    }, []);
 
-        /*
-         * Optional: Makes the sample page fill the window.
-         */
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
+    return (
+        <>
+            <div className="pac-card" id="pac-card">
+                <div>
+                    <div id="title">Autocomplete search</div>
+                    <div id="type-selector" className="pac-controls">
+                        <input
+                            type="radio"
+                            name="type"
+                            id="changetype-all"
+                            checked="checked"
+                        />
+                        <label htmlFor="changetype-all">All</label>
 
-        #description {
-            font-family: Roboto;
-            font-size: 15px;
-            font-weight: 300;
-        }
+                        <input type="radio" name="type" id="changetype-establishment" />
+                        <label htmlFor="changetype-establishment">establishment</label>
 
-        #infowindow-content .title {
-            font-weight: bold;
-        }
+                        <input type="radio" name="type" id="changetype-address" />
+                        <label htmlFor="changetype-address">address</label>
 
-        #infowindow-content {
-            display: none;
-        }
+                        <input type="radio" name="type" id="changetype-geocode" />
+                        <label htmlFor="changetype-geocode">geocode</label>
 
-        #map #infowindow-content {
-            display: inline;
-        }
+                        <input type="radio" name="type" id="changetype-cities" />
+                        <label htmlFor="changetype-cities">(cities)</label>
 
-        .pac-card {
-            background-color: #fff;
-            border: 0;
-            border-radius: 2px;
-            box-shadow: 0 1px 4px -1px rgba(0, 0, 0, 0.3);
-            margin: 10px;
-            padding: 0 0.5em;
-            font: 400 18px Roboto, Arial, sans-serif;
-            overflow: hidden;
-            font-family: Roboto;
-            padding: 0;
-        }
+                        <input type="radio" name="type" id="changetype-regions" />
+                        <label htmlFor="changetype-regions">(regions)</label>
+                    </div>
+                    <br />
+                    <div id="strict-bounds-selector" className="pac-controls">
+                        <input type="checkbox" id="use-location-bias" value="" checked />
+                        <label htmlFor="use-location-bias">Bias to map viewport</label>
 
-        #pac-container {
-            padding-bottom: 12px;
-            margin-right: 12px;
-        }
+                        <input type="checkbox" id="use-strict-bounds" value="" />
+                        <label htmlFor="use-strict-bounds">Strict bounds</label>
+                    </div>
+                </div>
+                <div id="pac-container">
+                    <input id="pac-input" type="text" placeholder="Enter a location" />
+                </div>
+            </div>
+            <div id="map"></div>
+            <div id="infowindow-content">
+                <span id="place-name" class="title"></span><br />
+                <span id="place-address"></span>
+            </div>
 
-        .pac-controls {
-            display: inline-block;
-            padding: 5px 11px;
-        }
+            <script
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8FNwCEJYyxe03lAL_EgFZ2z6WeXA1x1w&callback=initMap&libraries=places&v=weekly&solution_channel=GMP_CCS_autocomplete_v1"
+                defer
+            ></script>
+        </>
+    );
+}
 
-        .pac-controls label {
-            font-family: Roboto;
-            font-size: 13px;
-            font-weight: 300;
-        }
-
-        #pac-input {
-            background-color: #fff;
-            font-family: Roboto;
-            font-size: 15px;
-            font-weight: 300;
-            margin-left: 12px;
-            padding: 0 11px 0 13px;
-            text-overflow: ellipsis;
-            width: 400px;
-        }
-
-        #pac-input:focus {
-            border-color: #4d90fe;
-        }
-
-        #title {
-            color: #fff;
-            background-color: #4d90fe;
-            font-size: 25px;
-            font-weight: 500;
-            padding: 6px 12px;
-        }
-    </style>
-</head>
-<body>
-<div class="pac-card" id="pac-card">
-    <div>
-        <div id="title">Autocomplete search</div>
-        <div id="type-selector" class="pac-controls">
-            <input
-                    type="radio"
-                    name="type"
-                    id="changetype-all"
-                    checked="checked"
-            />
-            <label for="changetype-all">All</label>
-
-            <input type="radio" name="type" id="changetype-establishment" />
-            <label for="changetype-establishment">establishment</label>
-
-            <input type="radio" name="type" id="changetype-address" />
-            <label for="changetype-address">address</label>
-
-            <input type="radio" name="type" id="changetype-geocode" />
-            <label for="changetype-geocode">geocode</label>
-
-            <input type="radio" name="type" id="changetype-cities" />
-            <label for="changetype-cities">(cities)</label>
-
-            <input type="radio" name="type" id="changetype-regions" />
-            <label for="changetype-regions">(regions)</label>
-        </div>
-        <br />
-        <div id="strict-bounds-selector" class="pac-controls">
-            <input type="checkbox" id="use-location-bias" value="" checked />
-            <label for="use-location-bias">Bias to map viewport</label>
-
-            <input type="checkbox" id="use-strict-bounds" value="" />
-            <label for="use-strict-bounds">Strict bounds</label>
-        </div>
-    </div>
-    <div id="pac-container">
-        <input id="pac-input" type="text" placeholder="Enter a location" />
-    </div>
-</div>
-<div id="map"></div>
-<div id="infowindow-content">
-    <span id="place-name" class="title"></span><br />
-    <span id="place-address"></span>
-</div>
-
-<script
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8FNwCEJYyxe03lAL_EgFZ2z6WeXA1x1w&callback=initMap&libraries=places&v=weekly&solution_channel=GMP_CCS_autocomplete_v1"
-        defer
-></script>
-</body>
-</html>
+export default PlaceAutocomplete;

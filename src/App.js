@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth, googleProvider } from './firebase';
 import axios from 'axios';
+import Map from "./Map";
+import PlaceAutocomplete from "./PlaceAutocomplete";
+import QRCodeForm from "./qr-code-generator";
 
 function App() {
     const [user, setUser] = useState(null);
@@ -72,6 +75,11 @@ function App() {
                         <span id="place-name" className="title"></span><br />
                         <span id="place-address"></span>
                     </div>
+
+                    {/*<Map />*/}
+                    {/*<PlaceAutocomplete />*/}
+
+                    <QRCodeForm />
                 </>
             ) : (
                 <button onClick={signInWithGoogle}>Sign in with Google</button>
